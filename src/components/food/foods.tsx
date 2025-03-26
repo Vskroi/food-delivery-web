@@ -1,10 +1,11 @@
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SelectedCategories } from "@/components/food/SelectedCategories";
 
 export const Food = () => {
     const { user } = useParams<{ user: string }>();
+    const router = useRouter();
     const [catery, setCatery] = useState<Cat>({
       name: "",
       _id: "",
@@ -26,19 +27,17 @@ export const Food = () => {
       }
     };
   
-    const getFoods = async () => {
+    const getFoods = async (_id: string | null) => {
       try {
         setLoading(false);
-        const Alldish = categories.find(
-          (category) => category._id === catery._id
-        );
+        const AllDish = _id === "AllDish";
   
-        if (!Alldish) {
+        if (AllDish) {
           const response = await axios.get("http://localhost:4000/food/allfoods");
           setAllFoods(response.data.data);
         } else {
           const response = await axios.get(
-            `http://localhost:4000/food/category/${catery._id}`
+            `http://localhost:4000/food/category/${_id}`
           );
           if (response) {
             setAllFoods(response.data.data);
@@ -58,20 +57,26 @@ export const Food = () => {
   
     useEffect(() => {
       const selectedCategory = searchParams.get("cateryName");
+      console.log("selectedCategory", selectedCategory);
       setCatery((prev) => ({ ...prev, _id: selectedCategory || "" }));
       const cateryName = categories.find((a) => a._id === selectedCategory);
+      console.log("cateryName", cateryName);
       if (cateryName) {
         setCatery((prev) => ({ ...prev, name: cateryName.cateryName || "" }));
-        getFoods();
+        getFoods(cateryName._id as string);
       } else {
         setCatery((prev) => ({ ...prev, name: "AllDish" }));
-        getFoods();
+        getFoods("AllDish");
       }
     }, [searchParams]);
   
+  
     useEffect(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("cateryName", "AllDish");
+      router.push(`?${params.toString()}`);
       category();
-      getFoods();
+      getFoods("AllDish");
     }, []);
     return (<>
         {catery.name === "AllDish" ? (
