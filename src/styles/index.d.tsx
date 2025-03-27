@@ -17,7 +17,6 @@ type Food = {
   category: string | null;
 };
 
-
 type Dish = {
   foodName: string | null;
   price: string | null;
@@ -29,4 +28,16 @@ type Dish = {
 type Cat = {
   name?: string;
   _id: string | null;
+};
+type foodOrderType = {
+  user: string;
+  _id: string;
+  totalPrice: number;
+  image: string;
+  foodOrderItems: {
+    food: string;
+    quantity: number;
+  };
+
+  status: string;
 };

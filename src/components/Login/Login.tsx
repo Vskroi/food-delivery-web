@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { ChevronLeft } from "lucide-react";
 import { Button } from "../ui/button";
@@ -35,35 +35,31 @@ export const Login = () => {
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
-
+  
     try {
-      console.log("Sending request with values:", loginValue);
-
-      const response = await fetch(
-        "http://localhost:4000/user/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(loginValue),
-        }
-      );
-
-      const responseData = await response.json(); 
-
-      console.log(responseData);
-
+      const response = await fetch("http://localhost:4000/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginValue),
+      });
+  
+      const responseData = await response.json();
+  
+      console.log("responseData", responseData);
+  
       if (responseData.success) {
         console.log("Login successful:", responseData.message);
-      
-        // Navigate using a route instead of query parameters
-        router.push(`/UserPage/${responseData.user._id}`);
+  
+       
+        localStorage.setItem("token", responseData.data); 
+  
+       
+        router.push(`/UserPage/home`);
       } else {
         setError(responseData.message);
       }
-      
-      
     } catch (err) {
       console.error("Login error:", err);
       setError("An error occurred during login.");
@@ -71,12 +67,13 @@ export const Login = () => {
       setLoading(false);
     }
   };
+  
 
   const onEmailValueChange = (e: event) => {
     setLoginValue((prev) => ({ ...prev, email: e.target.value }));
   };
 
-  const onPasswordValueChange = (e : event) => {
+  const onPasswordValueChange = (e: event) => {
     setLoginValue((prev) => ({ ...prev, password: e.target.value }));
   };
 
@@ -116,7 +113,10 @@ export const Login = () => {
         <Button onClick={handleSubmit} className="w-[336px]">
           Let's Go
         </Button>
-        <Link className="bg-black w-[20px] h-[20px]" href={`/UserPage/ADMIN`}> asdasdasdasd</Link>
+        <Link className="bg-black w-[20px] h-[20px]" href={`/UserPage/ADMIN`}>
+          {" "}
+          asdasdasdasd
+        </Link>
       </div>
       <div className="w-[856px] h-[904px] relative mt-10">
         <img

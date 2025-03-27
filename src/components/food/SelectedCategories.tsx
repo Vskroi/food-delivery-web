@@ -9,12 +9,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
 import { useEffect, useState } from "react";
 
 export const SelectedCategories = ({ food }: { food: Food }) => {
   const [number, setNumber] = useState<number>(1);
   const [totalPrice, setTotalPrice] = useState<number>(food.price as number);
-
+const [foodOrder , setfoodOrder] = useState<foodOrderType>(
+  
+)
   const selectMinus = () => {
     if (number === 1) {
       return;
