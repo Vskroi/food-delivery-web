@@ -11,13 +11,21 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { useEffect, useState } from "react";
+import { useUserData } from "@/providers/AuthenticationProvider";
 
 export const SelectedCategories = ({ food }: { food: Food }) => {
+  const { data } = useUserData()
   const [number, setNumber] = useState<number>(1);
-  const [totalPrice, setTotalPrice] = useState<number>(food.price as number);
-const [foodOrder , setfoodOrder] = useState<foodOrderType>(
-  
-)
+  const [foodOrder, setfoodOrder] = useState<foodOrderType>(
+    {
+      userId: null,
+      totalPrice: null,//
+      image: null,//
+      food: null,//
+      quantity: null,//
+    }
+  );
+
   const selectMinus = () => {
     if (number === 1) {
       return;
@@ -28,16 +36,36 @@ const [foodOrder , setfoodOrder] = useState<foodOrderType>(
   const selectPlus = () => {
     setNumber(number + 1);
   };
-  useEffect(() => {
-    setTotalPrice((food.price as number) * number);
-  }, [number]);
-  const onNumberChange = (e :  React.ChangeEvent<HTMLInputElement>) => {
-    e.target.value
+  const fetchData = async() => {
+    try{
+     const response =  await fetch("http://localhost:4000/foodOrder/create",
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"applocation/json"
+        },
+        body:JSON.stringify({
+          userId: foodOrder?.userId,
+          totalPrice: foodOrder?.totalPrice,
+          image: foodOrder?.image,
+          food: foodOrder?.food,
+          quantity: foodOrder?.quantity,
+        })
+      }
+     )
+    }catch(error){console.log(error)}
   }
+  useEffect(() => {
+    setfoodOrder((prev) => ({...prev, food : food._id , image:food.image }))
+  },[])
+  useEffect(() => {
+    setfoodOrder((prev) => ({...prev, totalPrice : food.price as number * number , }))
+  }, [number]);
+  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setfoodOrder((prev) => ({ ...prev, quantity: e.target.value as unknown as number}))
+  };
   return (
-    <div
-      className="w-[270.75px] h-[241px] rounded-[22px] border-[1px] bg-white border-[#E4E4E7] p-4"
-    >
+    <div className="w-[270.75px] h-[241px] rounded-[22px] border-[1px] bg-white border-[#E4E4E7] p-4">
       <div
         className="relative w-[238.75px] h-[129px] rounded-xl overflow-hidden bg-cover bg-center"
         style={{ backgroundImage: `url(${food.image as string})` }}
@@ -72,7 +100,7 @@ const [foodOrder , setfoodOrder] = useState<foodOrderType>(
                   <div>
                     <p className="text-gray-600 text-[15px]">Total price</p>
                     <p>
-                      $<span className="text-xss font-bold">{totalPrice}</span>
+                      $<span className="text-xss font-bold">{foodOrder.totalPrice}</span>
                     </p>
                   </div>
                   <div>
@@ -115,7 +143,7 @@ const [foodOrder , setfoodOrder] = useState<foodOrderType>(
 
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction>Add to cart</AlertDialogAction>
+              <AlertDialogAction onClick={fetchData} >Add to cart</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

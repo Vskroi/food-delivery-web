@@ -30,14 +30,10 @@ type Cat = {
   _id: string | null;
 };
 type foodOrderType = {
-  user: string;
-  _id: string;
-  totalPrice: number;
-  image: string;
-  foodOrderItems: {
-    food: string;
-    quantity: number;
-  };
-
-  status: string;
+  userId: string | null;
+  totalPrice: number | null;
+  image: string | null;
+  food: string | null;
+  quantity: number | null;
+  status?: string | null;
 };

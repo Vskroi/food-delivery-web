@@ -41,17 +41,17 @@ export const Food = () => {
           );
           if (response) {
             setAllFoods(response.data.data);
-            console.log("1");
+     
           } else {
             setAllFoods([]);
-            console.log("2");
+        
           }
         }
         setLoading(true);
       } catch (error) {
         console.log(error);
         setAllFoods([]);
-        console.log("2");
+     
       }
     };
   
