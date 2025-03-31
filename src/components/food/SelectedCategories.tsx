@@ -14,18 +14,17 @@ import { useEffect, useState } from "react";
 import { useUserData } from "@/providers/AuthenticationProvider";
 
 export const SelectedCategories = ({ food }: { food: Food }) => {
-  const { data } = useUserData()
+  const { data } = useUserData();
   const [number, setNumber] = useState<number>(1);
-  const [foodOrder, setfoodOrder] = useState<foodOrderType>(
-    {
-      userId: null,
-      totalPrice: null,//
-      image: null,//
-      food: null,//
-      quantity: null,//
-    }
-  );
+  const [foodOrder, setfoodOrder] = useState<foodOrderType>({
+    userId: null, //
+    totalPrice: null, //
+    image: null, //
+    food: null, //
+    quantity: null, //
+  });
 
+  console.log(foodOrder);
   const selectMinus = () => {
     if (number === 1) {
       return;
@@ -36,33 +35,52 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
   const selectPlus = () => {
     setNumber(number + 1);
   };
-  const fetchData = async() => {
-    try{
-     const response =  await fetch("http://localhost:4000/foodOrder/create",
-      {
-        method:"POST",
-        headers:{
-          "Content-Type":"applocation/json"
+  const fetchData = async () => {
+    if (!foodOrder.userId || !foodOrder.food || !foodOrder.quantity) {
+      alert("Please ensure all fields are filled!");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:4000/foodOrder/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify({
-          userId: foodOrder?.userId,
-          totalPrice: foodOrder?.totalPrice,
-          image: foodOrder?.image,
-          food: foodOrder?.food,
-          quantity: foodOrder?.quantity,
-        })
-      }
-     )
-    }catch(error){console.log(error)}
-  }
+        body: JSON.stringify({
+          userId: foodOrder.userId,
+          totalPrice: foodOrder.totalPrice,
+          image: foodOrder.image,
+          food: foodOrder.food,
+          quantity: foodOrder.quantity,
+          status:"PANDING"
+        }),
+      });
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong! Please try again later.");
+    }
+  };
+
   useEffect(() => {
-    setfoodOrder((prev) => ({...prev, food : food._id , image:food.image }))
-  },[])
+    setfoodOrder((prev) => ({
+      ...prev,
+      food: food._id,
+      image: food.image,
+      userId: data._id,
+    }));
+  }, []);
+
   useEffect(() => {
-    setfoodOrder((prev) => ({...prev, totalPrice : food.price as number * number , }))
+    setfoodOrder((prev) => ({
+      ...prev,
+      totalPrice: (food.price as number) * number,
+      quantity: number,
+    }));
   }, [number]);
   const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setfoodOrder((prev) => ({ ...prev, quantity: e.target.value as unknown as number}))
+    quantity: e.target.value;
+    setfoodOrder((prev) => ({ ...prev, quantity: number }));
   };
   return (
     <div className="w-[270.75px] h-[241px] rounded-[22px] border-[1px] bg-white border-[#E4E4E7] p-4">
@@ -100,7 +118,10 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
                   <div>
                     <p className="text-gray-600 text-[15px]">Total price</p>
                     <p>
-                      $<span className="text-xss font-bold">{foodOrder.totalPrice}</span>
+                      $
+                      <span className="text-xss font-bold">
+                        {foodOrder.totalPrice}
+                      </span>
                     </p>
                   </div>
                   <div>
@@ -143,7 +164,9 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
 
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={fetchData} >Add to cart</AlertDialogAction>
+              <AlertDialogAction onClick={fetchData}>
+                Add to cart
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

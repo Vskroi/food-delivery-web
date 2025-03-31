@@ -49,10 +49,10 @@ interface LoginProps {
 
       const responseData = await response.json();
 
-      console.log("responseData", responseData);
+ 
 
       if (responseData.success) {
-        console.log("Login successful:", responseData.message);
+ 
 
         localStorage.setItem("token", responseData.data);
 

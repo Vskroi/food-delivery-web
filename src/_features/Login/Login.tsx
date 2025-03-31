@@ -1,6 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ChevronLeft } from "lucide-react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { useEffect, useState } from "react";
 
 import { object, string } from "yup";
@@ -32,7 +32,7 @@ export const Login = ({ nextStep }: LoginProps) => {
     setError(null);
 
     try {
-      console.log("Sending request with values:", loginValue);
+    
 
       const response = await fetch(
         "http://localhost:4000/user/login",
@@ -47,10 +47,9 @@ export const Login = ({ nextStep }: LoginProps) => {
 
       const responseData = await response.json(); 
 
-      console.log(responseData);
 
       if (responseData.success) {
-        console.log("Login successful:", responseData.message);
+  
         nextStep(true); 
       } else {
         setError(responseData.message);

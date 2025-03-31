@@ -35,7 +35,7 @@ export const Login = () => {
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
-  
+
     try {
       const response = await fetch("http://localhost:4000/user/login", {
         method: "POST",
@@ -44,18 +44,16 @@ export const Login = () => {
         },
         body: JSON.stringify(loginValue),
       });
-  
+
       const responseData = await response.json();
-  
-      console.log("responseData", responseData);
-  
+
+
+
       if (responseData.success) {
-        console.log("Login successful:", responseData.message);
-  
-       
-        localStorage.setItem("token", responseData.data); 
-  
-       
+
+
+        localStorage.setItem("token", responseData.data);
+
         router.push(`/UserPage/home`);
       } else {
         setError(responseData.message);
@@ -67,7 +65,6 @@ export const Login = () => {
       setLoading(false);
     }
   };
-  
 
   const onEmailValueChange = (e: event) => {
     setLoginValue((prev) => ({ ...prev, email: e.target.value }));

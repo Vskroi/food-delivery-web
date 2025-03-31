@@ -10,7 +10,7 @@ export const Food = () => {
       name: "",
       _id: "",
     });
-  
+
     const searchParams = useSearchParams();
     const [categories, setCategories] = useState<Category[]>([]);
     const [allFoods, setAllFoods] = useState<Food[]>([]);
@@ -57,10 +57,10 @@ export const Food = () => {
   
     useEffect(() => {
       const selectedCategory = searchParams.get("cateryName");
-      console.log("selectedCategory", selectedCategory);
+   
       setCatery((prev) => ({ ...prev, _id: selectedCategory || "" }));
       const cateryName = categories.find((a) => a._id === selectedCategory);
-      console.log("cateryName", cateryName);
+
       if (cateryName) {
         setCatery((prev) => ({ ...prev, name: cateryName.cateryName || "" }));
         getFoods(cateryName._id as string);
