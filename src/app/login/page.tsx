@@ -76,9 +76,9 @@ interface LoginProps {
     setLoginValue((prev) => ({ ...prev, password: e.target.value }));
   };
 
-  if (loading) {
+/*   if (loading) {
     return <div>Loading...</div>;
-  }
+  } */
 
   return (
     <div className="w-full flex w-full justify-center items-center">
@@ -112,10 +112,12 @@ interface LoginProps {
         <Button onClick={handleSubmit} className="w-[336px]">
           Let's Go
         </Button>
-        <Link className="bg-black w-[20px] h-[20px]" href={`/UserPage/ADMIN`}>
+        <div className="flex gap-2">
+       <p>Don’t have an account? </p> <Link className=" text-[#2563EB]" href={`/sign-up/email`}>
           {" "}
-          asdasdasdasd
+            Sign up 
         </Link>
+        </div>
       </div>
       <div className="w-[856px] h-[904px] relative mt-10">
         <img

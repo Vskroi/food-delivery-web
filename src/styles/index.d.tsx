@@ -37,3 +37,7 @@ type foodOrderType = {
   quantity: number | null;
   status?: string | null;
 };
+type CreateAccount = {
+  email?: string | null;
+  password?: string;
+};

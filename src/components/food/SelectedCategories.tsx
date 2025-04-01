@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { useUserData } from "@/providers/AuthenticationProvider";
 
 export const SelectedCategories = ({ food }: { food: Food }) => {
-  const { data } = useUserData();
+  const  userData   = useUserData();
   const [number, setNumber] = useState<number>(1);
   const [foodOrder, setfoodOrder] = useState<foodOrderType>({
     userId: null, //
@@ -24,7 +24,7 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
     quantity: null, //
   });
 
-  console.log(foodOrder);
+
   const selectMinus = () => {
     if (number === 1) {
       return;
@@ -63,13 +63,16 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
   };
 
   useEffect(() => {
-    setfoodOrder((prev) => ({
-      ...prev,
-      food: food._id,
-      image: food.image,
-      userId: data._id,
-    }));
-  }, []);
+    if (userData) {
+      setfoodOrder((prev) => ({
+        ...prev,
+        food: food._id,
+        image: food.image,
+        userId: userData.data._id, 
+      }));
+    }
+  }, [userData, food]); 
+  
 
   useEffect(() => {
     setfoodOrder((prev) => ({

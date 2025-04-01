@@ -1,4 +1,5 @@
-import { LucideShoppingCart, User } from "lucide-react";
+import {  User } from "lucide-react";
+import { SheetComponent } from "./sheet";
 
 export const Header = () => {
   return (
@@ -21,8 +22,8 @@ export const Header = () => {
           </div>
         </div>
         <div className="flex gap-3">
-            <input  name="" id="" />
-            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center"> <LucideShoppingCart/> </div>
+           {/*  <input  name="" id="" /> */}
+<SheetComponent/>
             <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center"> <User/></div>
         </div>
       </div>

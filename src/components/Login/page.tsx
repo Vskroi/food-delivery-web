@@ -22,7 +22,7 @@ export const Login = () => {
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const userSchema = object({
@@ -74,9 +74,9 @@ export const Login = () => {
     setLoginValue((prev) => ({ ...prev, password: e.target.value }));
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+/*   if (loading) {
+    return <div>Loading....</div>;
+  } */
 
   return (
     <div className="w-full flex w-full justify-center items-center">
