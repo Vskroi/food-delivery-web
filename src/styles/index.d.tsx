@@ -30,14 +30,37 @@ type Cat = {
   _id: string | null;
 };
 type foodOrderType = {
-  userId: string | null;
-  totalPrice: number | null;
-  image: string | null;
-  food: string | null;
-  quantity: number | null;
-  status?: string | null;
+  userId: string ;
+  totalPrice: number ;
+  image: string ;
+  food: string ;
+  quantity: number ;
+  status?: string ;
 };
 type CreateAccount = {
   email?: string | null;
   password?: string;
+};
+type UserContextType = {
+  data: {
+    email: string;
+    _id: string;
+    role: string;
+  };
+  exp: number;
+  iat: number;
+};
+
+type Order = {
+  _id: string;
+  foodOrderItems: {
+    food: Food;
+    quantity: number;
+  }[];
+  status: string;
+  totalPrice: number;
+  createdAt: string;
+  updatedAt: string;
+  user: string;
+  image: string;
 };

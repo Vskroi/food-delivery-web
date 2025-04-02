@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { createContext, useContext, useEffect, useState } from "react";
 type UserContextType = {
   email: string | undefined;
@@ -12,16 +12,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(JSON.parse(user || "{}"));
   }, []);
 
-if (!window) {
-  return <div>hello</div>;
-}
-return (
-    <UserContext.Provider value={{email: user?.email , role: user?.role }}>
-        {user ? children : <div>... loading</div>}
+  if (!window) {
+    return <div>hello</div>;
+  }
+  return (
+    <UserContext.Provider value={{ email: user?.email as string, role: user?.role as string }}>
+      {user ? children : <div>... loading</div>}
     </UserContext.Provider>
-)
+  );
 };
 export const useUser = () => {
-    const context = useContext(UserContext)
-    return context
-}
+  const context = useContext(UserContext);
+  return context;
+};

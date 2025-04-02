@@ -54,9 +54,10 @@ export const Login = () => {
 
         localStorage.setItem("token", responseData.data);
 
-        router.push(`/UserPage/home`);
+        router.push(`userPage/home`);
       } else {
         setError(responseData.message);
+
       }
     } catch (err) {
       console.error("Login error:", err);

@@ -12,17 +12,13 @@ import {
 
 import { useEffect, useState } from "react";
 import { useUserData } from "@/providers/AuthenticationProvider";
+import { useFoodOrder } from "@/providers/foodorderProvider";
 
 export const SelectedCategories = ({ food }: { food: Food }) => {
+  const { foodOrder, setFoodOrder, refetch } = useFoodOrder();
   const  userData   = useUserData();
   const [number, setNumber] = useState<number>(1);
-  const [foodOrder, setfoodOrder] = useState<foodOrderType>({
-    userId: null, //
-    totalPrice: null, //
-    image: null, //
-    food: null, //
-    quantity: null, //
-  });
+
 
 
   const selectMinus = () => {
@@ -35,47 +31,22 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
   const selectPlus = () => {
     setNumber(number + 1);
   };
-  const fetchData = async () => {
-    if (!foodOrder.userId || !foodOrder.food || !foodOrder.quantity) {
-      alert("Please ensure all fields are filled!");
-      return;
-    }
 
-    try {
-      const response = await fetch("http://localhost:4000/foodOrder/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: foodOrder.userId,
-          totalPrice: foodOrder.totalPrice,
-          image: foodOrder.image,
-          food: foodOrder.food,
-          quantity: foodOrder.quantity,
-          status:"PANDING"
-        }),
-      });
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong! Please try again later.");
-    }
-  };
 
   useEffect(() => {
-    if (userData) {
-      setfoodOrder((prev) => ({
+    if (userData as UserContextType) {
+      setFoodOrder((prev: any) => ({
         ...prev,
-        food: food._id,
-        image: food.image,
-        userId: userData.data._id, 
+       food: food._id as string,
+        image: food.image as string,
+        userId: userData?.data._id , 
       }));
     }
   }, [userData, food]); 
   
 
   useEffect(() => {
-    setfoodOrder((prev) => ({
+    setFoodOrder((prev ) => ({
       ...prev,
       totalPrice: (food.price as number) * number,
       quantity: number,
@@ -83,7 +54,7 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
   }, [number]);
   const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     quantity: e.target.value;
-    setfoodOrder((prev) => ({ ...prev, quantity: number }));
+    setFoodOrder((prev) => ({ ...prev, quantity: number }));
   };
   return (
     <div className="w-[270.75px] h-[241px] rounded-[22px] border-[1px] bg-white border-[#E4E4E7] p-4">
@@ -167,7 +138,7 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
 
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={fetchData}>
+              <AlertDialogAction onClick={refetch} >
                 Add to cart
               </AlertDialogAction>
             </AlertDialogFooter>

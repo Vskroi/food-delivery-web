@@ -78,6 +78,7 @@ export const Food = () => {
       category();
       getFoods("AllDish");
     }, []);
+  
     return (<>
         {catery.name === "AllDish" ? (
         categories.map((cat) => (
@@ -105,7 +106,7 @@ export const Food = () => {
       ) : (
         <div className="w-[1150px] p-6 bg-white rounded-xl inline-flex flex-col justify-start items-start gap-4 overflow-hidden relative left-12 mt-12">
           <p>{catery.name}</p>
-          <div className="grid gap-8 wrap grid-cols-4">
+          <div className="grid gap-8  grid-cols-4">
             {allFoods && allFoods.length > 0 ? (
               allFoods.map((food) => (
                 <div key={food._id}>

@@ -11,31 +11,25 @@ import { useUserData } from "@/providers/AuthenticationProvider";
 import axios from "axios";
 import { LucideShoppingCart } from "lucide-react";
 
-type Order = {
-  _id: string;
-  foodOrderItems: {
-    food: Food;
-    quantity: number;
-  }[];
-  status: string;
-  totalPrice: number;
-  createdAt: string;
-  updatedAt: string;
-  user: string;
-  image: string;
-};
 
 export const SheetComponent = () => {
   const userData = useUserData();
-  const [orderData, setOrderData] = useState<Order[] | undefined>(undefined);
+  const [orderData, setOrderData] = useState<Order[] >([]);
   const [foodArray, setFoodArray] = useState<Food[]>([]);
-  console.log("foodArray", foodArray);
+  const [error, setError] = useState<string | null>(null);
+  const [isDataFetched, setIsDataFetched] = useState(false);
+  const [items , setItems] = useState<number>()
+console.log("orderData" , orderData)
+
+
   const getData = async () => {
     try {
       const response = await axios.get<Order[]>(
         `http://localhost:4000/FoodOrder/userID/${userData?.data._id}`
       );
+     if(response.data){
       setOrderData(response.data);
+     }
 
       const foods = response.data.flatMap((order) =>
         order.foodOrderItems.map((item) => item.food)
@@ -43,18 +37,34 @@ export const SheetComponent = () => {
       setFoodArray(foods);
     } catch (error) {
       console.error("Error fetching order data:", error);
+      setError("Failed to fetch order data.");
     }
   };
 
   useEffect(() => {
-    if (userData?.data?._id) {
+    if (userData?.data?._id && !isDataFetched) {
       getData();
+      setIsDataFetched(true);
+     
     }
-  }, [userData]);
+    if (orderData && orderData.length > 0) {
+      const items = orderData.map((order, index) => order.totalPrice + orderData[index].totalPrice);
+      console.log("items" , items)
+     
+    }
+    
+  }, [userData, isDataFetched]);
+
+  const handleOpenSheet = () => {
+    if (!isDataFetched) {
+      getData();
+      setIsDataFetched(true);
+    }
+  };
 
   return (
     <Sheet>
-      <SheetTrigger onClick={getData}>
+      <SheetTrigger onClick={handleOpenSheet}>
         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
           <LucideShoppingCart />
         </div>
@@ -80,18 +90,24 @@ export const SheetComponent = () => {
                   foodArray.map((foodItem, index) => (
                     <div
                       key={index}
-                      className="flex mb-[20px] justify-between items-center"
+                      className="flex border-b-[1px] w-[330px] border-black mr-3 border-dashed pb-[20px] justify-between items-center "
                     >
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 mt-5">
                         <img
                           src={foodItem.image as string}
-                          alt=""
-                          className="rounded-xl h-[100px] w-[100px]"
+                          alt={`Image of ${foodItem.foodName}`}
+                          className="rounded-xl h-[120px] w-[120px]"
                         />
-                        <div >
-                          <p className="mb-[10px] text-red-500 text-[18px]">{foodItem.foodName}</p>
-                        <p className="mb-[10px] text-black">{foodItem.ingerdiets}</p>
-                          <p className="mb-[10px] text-black">${foodItem.price}</p>
+                        <div>
+                          <p className="mb-[10px] text-red-500 text-[18px]">
+                            {foodItem.foodName}
+                          </p>
+                          <p className="mb-[10px] text-black">
+                            {foodItem.ingerdiets}
+                          </p>
+                          <p className="mb-[10px] text-black">
+                            ${foodItem.price}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -100,10 +116,24 @@ export const SheetComponent = () => {
                   <p>No food items available.</p>
                 )}
               </div>
+              <button className="w-[439px] mt-[40px] h-[44px] border-[1.5px] text-red-500 text-[18px] rounded-full border-red-500 flex justify-center items-center">
+                Add food
+              </button>
+            </div>
+            <div className="w-[471px] h-[276px] bg-white rounded-xl mt-10 p-5">
+              <h3 className="text-black text-2xl">Payment Info</h3>
+              <div className="flex w-full justify-between text-Inter">
+                <p>Items</p>
+                <p>{} </p>
+              </div>
+              <div className="flex w-full justify-between text-Inter mt-3">
+              
+              </div>
             </div>
           </SheetDescription>
         </SheetHeader>
       </SheetContent>
+      {error && <p className="text-red-500">{error}</p>}
     </Sheet>
   );
 };

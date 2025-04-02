@@ -53,10 +53,7 @@ interface LoginProps {
 
       if (responseData.success) {
  
-
-        localStorage.setItem("token", responseData.data);
-
-        router.push(`/UserPage/home`);
+        
       } else {
         setError(responseData.message);
       }
