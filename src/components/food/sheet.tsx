@@ -9,27 +9,27 @@ import {
 } from "@/components/ui/sheet";
 import { useUserData } from "@/providers/AuthenticationProvider";
 import axios from "axios";
-import { LucideShoppingCart } from "lucide-react";
-
+import { Divide, LucideShoppingCart } from "lucide-react";
 
 export const SheetComponent = () => {
   const userData = useUserData();
-  const [orderData, setOrderData] = useState<Order[] >([]);
+  const [orderData, setOrderData] = useState<Order[]>([]);
   const [foodArray, setFoodArray] = useState<Food[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isDataFetched, setIsDataFetched] = useState(false);
-  const [items , setItems] = useState<number>()
-console.log("orderData" , orderData)
 
+  const [isLoading, setIsLoading] = useState(false);
+  console.log(orderData);
 
   const getData = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get<Order[]>(
         `http://localhost:4000/FoodOrder/userID/${userData?.data._id}`
       );
-     if(response.data){
-      setOrderData(response.data);
-     }
+      if (response.data) {
+        setOrderData(response.data);
+      }
 
       const foods = response.data.flatMap((order) =>
         order.foodOrderItems.map((item) => item.food)
@@ -38,6 +38,8 @@ console.log("orderData" , orderData)
     } catch (error) {
       console.error("Error fetching order data:", error);
       setError("Failed to fetch order data.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,14 +47,12 @@ console.log("orderData" , orderData)
     if (userData?.data?._id && !isDataFetched) {
       getData();
       setIsDataFetched(true);
-     
     }
     if (orderData && orderData.length > 0) {
-      const items = orderData.map((order, index) => order.totalPrice + orderData[index].totalPrice);
-      console.log("items" , items)
-     
+      const items = orderData.map(
+        (order, index) => order.totalPrice + orderData[index].totalPrice
+      );
     }
-    
   }, [userData, isDataFetched]);
 
   const handleOpenSheet = () => {
@@ -60,11 +60,12 @@ console.log("orderData" , orderData)
       getData();
       setIsDataFetched(true);
     }
+    
   };
 
   return (
     <Sheet>
-      <SheetTrigger onClick={handleOpenSheet}>
+      <SheetTrigger onClick={handleOpenSheet || getData}>
         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
           <LucideShoppingCart />
         </div>
@@ -75,13 +76,44 @@ console.log("orderData" , orderData)
             <LucideShoppingCart stroke="white" /> Order detail
           </SheetTitle>
           <SheetDescription>
-            <div className="bg-white fit-content h-8 p-[2px] rounded-full flex items-center">
+            {isLoading ? (
+              <div>loading ...</div>
+            ) : (
+              <div>
+                {" "}
+                <div className="w-1/2 h-full bg-red-500 rounded-full text-white flex justify-center items-center">
+                  Order
+                </div>
+                <div className="mt-20 w-[471px] min-h-[50px] h-fit bg-white text-black rounded-2xl p-4">
+                  Order history
+                  <div>
+                    {orderData.map((m) => (
+                      <div key={m._id}>
+                        <div className="flex w-[330px] justify-between">
+                          <div>${m.totalPrice}</div>
+                          <div className="p-1 rounded-full border-[1px] border-red-500">
+                            {m.status}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+      {error && <p className="text-red-500">{error}</p>}
+    </Sheet>
+  );
+};
+{
+  /*     <div className="bg-white fit-content h-8 p-[2px] rounded-full flex items-center">
               <div className="w-1/2 h-full bg-red-500 rounded-full text-white flex justify-center items-center">
                 Cart
               </div>
-              <div className="w-1/2 h-full bg-red-500 rounded-full text-white flex justify-center items-center">
-                Order
-              </div>
+             
             </div>
             <div className="w-[471px] h-[540px] p-4 bg-white mt-[30px] rounded-xl">
               <h4 className="text-black text-[20px]">My cart</h4>
@@ -129,11 +161,5 @@ console.log("orderData" , orderData)
               <div className="flex w-full justify-between text-Inter mt-3">
               
               </div>
-            </div>
-          </SheetDescription>
-        </SheetHeader>
-      </SheetContent>
-      {error && <p className="text-red-500">{error}</p>}
-    </Sheet>
-  );
-};
+            </div> */
+}

@@ -39,6 +39,8 @@ interface LoginProps {
     setError(null);
 
     try {
+      await userSchema.validate(loginValue); 
+
       const response = await fetch("http://localhost:4000/user/login", {
         method: "POST",
         headers: {
@@ -49,17 +51,14 @@ interface LoginProps {
 
       const responseData = await response.json();
 
- 
-
       if (responseData.success) {
- 
-        
+        localStorage.setItem("token", responseData.data);
+        router.push(`userPage/home`);
       } else {
         setError(responseData.message);
       }
     } catch (err) {
-      console.error("Login error:", err);
-      setError("An error occurred during login.");
+    
     } finally {
       setLoading(false);
     }

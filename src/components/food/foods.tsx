@@ -2,8 +2,10 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SelectedCategories } from "@/components/food/SelectedCategories";
+import { useFoodOrder } from "@/providers/foodorderProvider";
 
 export const Food = () => {
+    const { foodOrder, setFoodOrder, refetch } = useFoodOrder();
     const { user } = useParams<{ user: string }>();
     const router = useRouter();
     const [catery, setCatery] = useState<Cat>({
@@ -15,7 +17,18 @@ export const Food = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [allFoods, setAllFoods] = useState<Food[]>([]);
     const [loading, setLoading] = useState(true);
+  const [detail ,  setDetial] =useState<boolean>(false)
   
+  const foodDetail = () => {
+
+    if(!detail) {
+      setDetial(true)
+      refetch()
+    }else{
+      setDetial(false)
+    }
+  }
+ 
     const category = async () => {
       try {
         setLoading(false);
@@ -94,7 +107,7 @@ export const Food = () => {
                   .map((food) => (
                     <div key={food._id}>
                       {" "}
-                      <SelectedCategories food={food} />{" "}
+                      <SelectedCategories food={food} foodDetail={foodDetail}/>{" "}
                     </div>
                   ))
               ) : (
@@ -111,7 +124,7 @@ export const Food = () => {
               allFoods.map((food) => (
                 <div key={food._id}>
                   {" "}
-                  <SelectedCategories food={food} />
+                  <SelectedCategories food={food} foodDetail={foodDetail} />
                 </div>
               ))
             ) : (
@@ -119,5 +132,20 @@ export const Food = () => {
             )}
           </div>
         </div>
-      )}</>)
+      )}
+    {detail && (
+        <div className="fixed inset-0 flex justify-center items-center z-60">
+          <div className="h-fit w-[464px] rounded-3xl bg-white p-4 justify-center">
+           <h2 className="flex justify-center">Your order has been sucessfully placed !</h2>
+           <div className=" flex justify-center mt-4"><img className="h-[200px]" src="../illustration.png" alt="illustration.png" />
+           
+           </div>
+           <div className="flex justify-center mt-4">
+           <button className=" w-[100px] rounded-full bg-gray-200 h-10" onClick={foodDetail}>Close</button>
+           </div>
+           
+            </div>
+        </div>
+      )}
+      </>)
 }

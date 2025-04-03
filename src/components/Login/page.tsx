@@ -47,17 +47,12 @@ export const Login = () => {
 
       const responseData = await response.json();
 
-
-
       if (responseData.success) {
-
-
         localStorage.setItem("token", responseData.data);
-
+        console.log("123");
         router.push(`userPage/home`);
       } else {
         setError(responseData.message);
-
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -75,7 +70,7 @@ export const Login = () => {
     setLoginValue((prev) => ({ ...prev, password: e.target.value }));
   };
 
-/*   if (loading) {
+  /*   if (loading) {
     return <div>Loading....</div>;
   } */
 
@@ -119,7 +114,7 @@ export const Login = () => {
       <div className="w-[856px] h-[904px] relative mt-10">
         <img
           className="rounded-3xl w-[856px] h-[904px]"
-          src="Frame1321316047.png"
+          src="../Frame1321316047.png"
         />
       </div>
     </div>

@@ -9,53 +9,57 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
 import { useEffect, useState } from "react";
 import { useUserData } from "@/providers/AuthenticationProvider";
 import { useFoodOrder } from "@/providers/foodorderProvider";
 
-export const SelectedCategories = ({ food }: { food: Food }) => {
+type Props = {
+  food: Food;
+  foodDetail: () => void;  // Corrected from `doodDetail`
+};
+
+export const SelectedCategories: React.FC<Props> = ({ food, foodDetail }) => {
   const { foodOrder, setFoodOrder, refetch } = useFoodOrder();
-  const  userData   = useUserData();
+  const userData = useUserData();
   const [number, setNumber] = useState<number>(1);
-
-
+ 
 
   const selectMinus = () => {
-    if (number === 1) {
-      return;
-    } else {
-      setNumber(number - 1);
-    }
+    if (number === 1) return;
+    setNumber(number - 1);
   };
+
+
   const selectPlus = () => {
     setNumber(number + 1);
   };
-
 
   useEffect(() => {
     if (userData as UserContextType) {
       setFoodOrder((prev: any) => ({
         ...prev,
-       food: food._id as string,
+        food: food._id as string,
         image: food.image as string,
-        userId: userData?.data._id , 
+        userId: userData?.data._id,
       }));
     }
-  }, [userData, food]); 
-  
+  }, [userData, food]);
 
   useEffect(() => {
-    setFoodOrder((prev ) => ({
+    setFoodOrder((prev) => ({
       ...prev,
       totalPrice: (food.price as number) * number,
       quantity: number,
     }));
-  }, [number]);
+  }, [number, food, setFoodOrder]);
+
   const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    quantity: e.target.value;
-    setFoodOrder((prev) => ({ ...prev, quantity: number }));
+    const newQuantity = Number(e.target.value);
+    if (newQuantity > 0) {
+      setNumber(newQuantity);
+    }
   };
+
   return (
     <div className="w-[270.75px] h-[241px] rounded-[22px] border-[1px] bg-white border-[#E4E4E7] p-4">
       <div
@@ -100,19 +104,22 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
                   </div>
                   <div>
                     <label htmlFor="Quantity" className="sr-only">
-                      {" "}
-                      Quantity{" "}
+                      Quantity
                     </label>
 
                     <div className="flex">
                       <button
                         type="button"
                         className={`flex justify-center items-center w-[36px] h-[36px] border-[1px] bg-white rounded-full
-                          ${number === 1 ? "border-grey-300" : "border-black"}
-                          `}
+                          ${
+                            number === 1
+                              ? "border-grey-300 cursor-not-allowed"
+                              : "border-black"
+                          }`}
                         onClick={selectMinus}
+                        disabled={number === 1}
                       >
-                        <Minus stroke={` ${number === 1 ? "gray" : "black"}`} />
+                        <Minus stroke={number === 1 ? "gray" : "black"} />
                       </button>
 
                       <input
@@ -138,12 +145,18 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
 
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={refetch} >
+              <AlertDialogAction
+                onClick={() => {
+                  foodDetail()
+                  
+                }}
+              >
                 Add to cart
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+        
       </div>
 
       <div className="self-stretch inline-flex flex-col w-full justify-start items-start gap-2">
@@ -159,6 +172,7 @@ export const SelectedCategories = ({ food }: { food: Food }) => {
           {food.ingerdiets}
         </div>
       </div>
+      
     </div>
   );
 };

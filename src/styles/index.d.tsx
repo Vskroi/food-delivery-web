@@ -64,3 +64,26 @@ type Order = {
   user: string;
   image: string;
 };
+
+type FoodOrder = {
+  createdAt: string;
+  foodOrderItems: {
+    food: {
+      foodName: string;
+      price: number;
+      _id: string;
+    };
+    quantity: string;
+    _id: string;
+  }[];
+  user: {
+    email: string;
+    phoneNumber: string;
+    _id: string;
+  };
+  image: string;
+  totalPrice: number;
+  updatedAt: string;
+  _id: string;
+  status: string; // Add the status field to the FoodOrder type
+};

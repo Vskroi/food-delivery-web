@@ -1,21 +1,21 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
 
-// Define the foodOrderType for better type safety
+
 type foodOrderType = {
   userId: string;
   totalPrice: number;
   image: string;
   food: string;
   quantity: number;
-  status: "PENDING" | "COMPLETED" | "FAILED"; // Add more status types if needed
+  status:string
 };
 
 const FoodOrderContext = createContext<{
   foodOrder: foodOrderType;
   setFoodOrder: React.Dispatch<React.SetStateAction<foodOrderType>>;
   refetch: () => Promise<void>;
-} | undefined>(undefined); // No need for array here, using an object
+} | undefined>(undefined);
 
 export const FoodOrderProvider = ({ children }: { children: React.ReactNode }) => {
   const [foodOrder, setFoodOrder] = useState<foodOrderType>({
@@ -24,14 +24,14 @@ export const FoodOrderProvider = ({ children }: { children: React.ReactNode }) =
     image: '',
     food: '',
     quantity: 0,
-    status: "PENDING",
+    status: "",
   });
 
   useEffect(() => {
-    // This ensures client-side logic only runs after the initial render
+  
     if (typeof window !== "undefined") {
-      // Perform any client-specific code here
-      console.log("Client-side logic executed");
+
+
     }
   }, []);
 

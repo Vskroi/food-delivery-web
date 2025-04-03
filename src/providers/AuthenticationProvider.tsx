@@ -28,24 +28,16 @@ export const AuthenticationProvider = ({
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const { decodedToken, isExpired } = useJwt(token as string);
-console.log(isExpired)
+
   useEffect(() => {
     if (!token) {
     
       router.push("/login");
       return;
-    }
-
-    if (decodedToken) {
-      setUserData(decodedToken as UserContextType);
-
-   
-      if (isExpired) {
-        router.push("/userPage/home"); 
-      }else{router.push("/login")}
-    } else {
-      
-      router.push("/login");
+    }else{
+      const userContextData: UserContextType = decodedToken as UserContextType
+        
+setUserData(userContextData)
     }
 
     setIsLoading(false);
@@ -60,9 +52,7 @@ export const useUserData = () => {
   const context = useContext(UserContext);
 
   if (context === null) { // Corrected condition
-    throw new Error(
-      "useUserData must be used within an AuthenticationProvider"
-    );
+   
   }
 
   return context;
